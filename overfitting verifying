@@ -1,0 +1,39 @@
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score
+
+# Load breast cancer dataset
+data = load_breast_cancer()
+
+# Create a DataFrame with the features
+df = pd.DataFrame(data.data, columns=data.feature_names)
+
+# Add target to DataFrame
+df['target'] = data.target
+
+# Split the data into features and target variable
+X = df.drop('target', axis=1)
+y = df['target']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Train a random forest classifier
+clf = RandomForestClassifier(n_estimators=100, random_state=42)
+clf.fit(X_train, y_train)
+
+# Evaluate the model using cross-validation
+cv_scores = cross_val_score(clf, X, y, cv=5)
+
+print("Cross-validation scores:", cv_scores)
+print("Mean cross-validation score:", np.mean(cv_scores))
+
+# Predict on test set
+y_pred = clf.predict(X_test)
+
+# Calculate accuracy on test set
+test_accuracy = accuracy_score(y_test, y_pred)
+print("Accuracy on test set:", test_accuracy)
