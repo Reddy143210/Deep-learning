@@ -1,0 +1,44 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.datasets import load_boston
+from sklearn.model_selection import train_test_split
+
+# Load the Boston Housing Prices dataset
+boston = load_boston()
+X = boston.data[:, 5]  # Use only one feature for simplicity (average number of rooms per dwelling)
+y = boston.target
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=0)
+
+# Function to calculate cross-deviation and deviation about x
+def calculate_deviations(x, y):
+    mean_x, mean_y = np.mean(x), np.mean(y)
+    SS_xy = np.sum(y*x - len(x)*mean_y*mean_x)
+    SS_xx = np.sum(x*x - len(x)*mean_x*mean_x)
+    return SS_xy, SS_xx
+
+# Function to calculate regression coefficients
+def estimate_coef(x, y):
+    SS_xy, SS_xx = calculate_deviations(x, y)
+    b_1 = SS_xy / SS_xx
+    b_0 = np.mean(y) - b_1*np.mean(x)
+    return b_0, b_1
+
+# Function to plot regression line
+def plot_regression_line(x, y, b):
+    plt.scatter(x, y, color='blue', label='Data Points')
+    y_pred = b[0] + b[1]*x
+    plt.plot(x, y_pred, color='red', label='Regression Line')
+    plt.xlabel('Average Number of Rooms per Dwelling')
+    plt.ylabel('Median Value of Owner-Occupied Homes ($1000s)')
+    plt.legend()
+    plt.title('Linear Regression: Boston Housing Prices')
+    plt.show()
+
+# Estimate regression coefficients
+b = estimate_coef(X_train, y_train)
+print("Estimated Coefficients:\nb_0 = {:.2f}  b_1 = {:.2f}".format(b[0], b[1]))
+
+# Plot the regression line
+plot_regression_line(X_train, y_train, b)
