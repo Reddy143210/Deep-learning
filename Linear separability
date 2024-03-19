@@ -1,0 +1,54 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Function to estimate regression coefficients
+def estimate_coef(x, y):
+    # number of observations/points
+    n = np.size(x)
+
+    # mean of x and y vector
+    mean_x, mean_y = np.mean(x), np.mean(y)
+
+    # calculating cross-deviation and deviation about x
+    SS_xy = np.sum(y*x - n*mean_y*mean_x)
+    SS_xx = np.sum(x*x - n*mean_x*mean_x)
+
+    # calculating regression coefficients
+    b_1 = SS_xy / SS_xx
+    b_0 = mean_y - b_1*mean_x
+
+    return (b_0, b_1)
+
+# Function to plot regression line
+def plot_regression_line(x, y, b):
+    plt.scatter(x, y, color='b', marker='o', s=30)
+
+    y_pred = b[0] + b[1]*x
+    plt.plot(x, y_pred, color='r')
+
+    plt.xlabel('X')
+    plt.ylabel('Y')
+
+    plt.show()
+
+def main():
+    # Sample data points for two classes (linearly separable)
+    class1_x = np.array([1, 2, 3, 4, 5])
+    class1_y = np.array([2, 3, 4, 5, 6])
+
+    class2_x = np.array([7, 8, 9, 10, 11])
+    class2_y = np.array([8, 9, 10, 11, 12])
+
+    # Concatenate the data points
+    x = np.concatenate((class1_x, class2_x))
+    y = np.concatenate((class1_y, class2_y))
+
+    # Estimate regression coefficients
+    b = estimate_coef(x, y)
+    print("Estimated coefficients:\nb_0 = {}  nb_1 = {}".format(b[0], b[1]))
+
+    # Plot regression line
+    plot_regression_line(x, y, b)
+
+if __name__ == "__main__":
+    main()
