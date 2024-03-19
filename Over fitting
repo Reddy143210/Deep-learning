@@ -1,0 +1,21 @@
+import numpy as np
+import pandas as pd
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import cross_val_score
+from sklearn.svm import SVC
+
+# Load the Breast Cancer Wisconsin (Diagnostic) dataset
+breast_cancer = load_breast_cancer()
+X = breast_cancer.data
+y = breast_cancer.target
+
+# Initialize a Support Vector Machine (SVM) classifier
+svm_classifier = SVC(kernel='linear', random_state=0)
+
+# Perform cross-validation to evaluate the model
+cv_scores = cross_val_score(svm_classifier, X, y, cv=5)  # 5-fold cross-validation
+
+# Print the cross-validation scores
+print("Cross-Validation Scores:", cv_scores)
+print("Mean Accuracy:", np.mean(cv_scores))
+print("Standard Deviation of Accuracy:", np.std(cv_scores))
