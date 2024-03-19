@@ -1,0 +1,51 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Step 1: Generate synthetic data
+np.random.seed(0)
+X = 2 * np.random.rand(100, 1)
+y = 4 + 3 * X + np.random.randn(100, 1)
+
+# Step 2: Define the loss or cost function (Mean Squared Error)
+def compute_cost(X, y, params):
+    m = len(y)
+    predictions = X.dot(params)
+    cost = (1/(2*m)) * np.sum(np.square(predictions - y))
+    return cost
+
+# Step 3: Gradient Descent Function
+def gradient_descent(X, y, params, learning_rate, iterations, stopping_threshold):
+    m = len(y)
+    cost_history = np.zeros(iterations)
+    for i in range(iterations):
+        predictions = X.dot(params)
+        gradient = (1/m) * X.T.dot(predictions - y)
+        params -= learning_rate * gradient
+        cost = compute_cost(X, y, params)
+        cost_history[i] = cost
+        if cost < stopping_threshold:
+            break
+    return params, cost_history
+
+# Step 4: Hyperparameters
+iterations = 1000
+learning_rate = 0.01
+stopping_threshold = 0.001
+
+# Step 5: Estimation of optimal parameters
+# Add bias term to X
+X_b = np.c_[np.ones((len(X), 1)), X]
+# Initialize parameters randomly
+params = np.random.randn(2, 1)
+# Perform gradient descent
+optimal_params, cost_history = gradient_descent(X_b, y, params, learning_rate, iterations, stopping_threshold)
+
+# Print the optimal parameters
+print("Optimal Parameters (Weights and Bias):", optimal_params)
+
+# Plot the cost history
+plt.plot(range(1, iterations + 1), cost_history, color='blue')
+plt.xlabel('Iterations')
+plt.ylabel('Cost')
+plt.title('Gradient Descent: Cost vs. Iterations')
+plt.show()
